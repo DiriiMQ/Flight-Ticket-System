@@ -3,6 +3,7 @@ package com.example.flightticket.pages
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -23,6 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import com.example.flightticket.R
+import com.example.flightticket.components.HomeComponents.HomeContent
+import com.example.flightticket.components.HomeComponents.BookingsContent
+import com.example.flightticket.components.HomeComponents.NotificationsContent
+import com.example.flightticket.components.HomeComponents.ProfileContent
 
 @SuppressLint("ResourceAsColor")
 @Composable
@@ -56,11 +61,12 @@ fun BookingService(icon: Painter, label: String) {
 }
 
 @Composable
-fun NavItem(icon: Painter, label: String, isActive: Boolean) {
+fun NavItem(icon: Painter, label: String, isActive: Boolean, onClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
+            .clickable(onClick = onClick)
             .fillMaxHeight()
             .padding(4.dp)
             .background(
@@ -87,86 +93,27 @@ fun NavItem(icon: Painter, label: String, isActive: Boolean) {
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier=Modifier
+    modifier: Modifier= Modifier
         .fillMaxSize()
         .background(Color(0xFFF5F5F5))
 ) {
-    val bookingServices = listOf(
-        BookingServiceData(painterResource(id = R.drawable.trips), "Trips"),
-        BookingServiceData(painterResource(id = R.drawable.hotel), "Hotel"),
-        BookingServiceData(painterResource(id = R.drawable.transport), "Transport"),
-        BookingServiceData(painterResource(id = R.drawable.events), "Events")
-    )
+    var currentScreen by remember { mutableStateOf(ScreenState.Home) }
 
     val navItems = listOf(
-        NavItemData(painterResource(id = R.drawable.ic_home), "Home", true),
-        NavItemData(painterResource(id = R.drawable.ic_search), "Search", false),
-        NavItemData(painterResource(id = R.drawable.ic_bookings), "Bookings", false),
-        NavItemData(painterResource(id = R.drawable.ic_profile), "Profile", false)
+        NavItemData(painterResource(id = R.drawable.ic_home), "Home", ScreenState.Home),
+        NavItemData(painterResource(id = R.drawable.ic_search), "Bookings", ScreenState.Bookings),
+        NavItemData(painterResource(id = R.drawable.ic_bookings), "Notifications", ScreenState.Notifications),
+        NavItemData(painterResource(id = R.drawable.ic_profile), "Profile", ScreenState.Profile)
     )
 
     Box(
         modifier = modifier
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .padding(top = 32.dp)
-        ) {
-            Text(
-                text = "Explore the beautiful world!",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF1C1B1F)
-                ),
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-            var searchText by remember { mutableStateOf("") }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .background(Color.White, RoundedCornerShape(16.dp))
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .fillMaxWidth()
-            ) {
-                BasicTextField(
-                    value = searchText,
-                    onValueChange = { searchText = it },
-                    textStyle = TextStyle(fontSize = 14.sp, color = Color(0xFF757575)),
-                    modifier = Modifier.weight(1f)
-                )
-                IconButton(onClick = { /* Handle search click */ }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = "Search icon",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Column {
-                Text(
-                    text = "Booking Services",
-                    style = TextStyle(fontSize = 16.sp, color = Color(0xFF1C1B1F)),
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .fillMaxWidth()
-                )
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    bookingServices.forEach { service ->
-                        BookingService(icon = service.icon, label = service.label)
-                    }
-                }
-            }
+        when (currentScreen) {
+            ScreenState.Home -> HomeContent()
+            ScreenState.Bookings -> BookingsContent()
+            ScreenState.Notifications -> NotificationsContent()
+            ScreenState.Profile -> ProfileContent()
         }
 
         Row(
@@ -180,7 +127,19 @@ fun HomeScreen(
                 .fillMaxWidth()
         ) {
             navItems.forEach { item ->
-                NavItem(icon = item.icon, label = item.label, isActive = item.isActive)
+                NavItem(
+                    icon = item.icon,
+                    label = item.label,
+                    isActive = (currentScreen == item.type),
+                    onClick = { currentScreen = when (item.label) {
+                            "Home" -> ScreenState.Home
+                            "Bookings" -> ScreenState.Bookings
+                            "Notifications" -> ScreenState.Notifications
+                            "Profile" -> ScreenState.Profile
+                            else -> ScreenState.Home
+                        }
+                    }
+                )
             }
         }
     }
@@ -189,7 +148,10 @@ fun HomeScreen(
 }
 
 data class BookingServiceData(val icon: Painter, val label: String)
-data class NavItemData(val icon: Painter, val label: String, val isActive: Boolean)
+data class NavItemData(val icon: Painter, val label: String, val type: ScreenState)
+enum class ScreenState {
+    Home, Bookings, Notifications, Profile
+}
 
 @Preview(showBackground = true)
 @Composable
