@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flightticket.R
+import com.example.flightticket.components.BookingsComponents.FlightList
 import com.example.flightticket.components.BookingsComponents.TransportContent
 
 data class BookingOption(val imageRes: Int, val title: String, val onClick: () -> Unit = {})
@@ -139,6 +140,7 @@ fun BookingsContent(modifier: Modifier = Modifier) {
             onBackClick = { currentScreen = "Home" },
             onSearchClick = { currentScreen = "Search" }
         )
+        "Search" -> FlightList()
         // Add other screens as needed
     }
 }

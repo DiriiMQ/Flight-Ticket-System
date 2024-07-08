@@ -123,6 +123,7 @@ fun TransportContent(
                 modifier = Modifier
                     .background(Color.White, shape = RoundedCornerShape(12.dp))
                     .padding(16.dp)
+                    .fillMaxWidth()
             ) {
                 Column {
                     Text(text = "From", fontSize = 12.sp, color = Color.Gray)
@@ -137,6 +138,7 @@ fun TransportContent(
                 modifier = Modifier
                     .background(Color.White, shape = RoundedCornerShape(12.dp))
                     .padding(16.dp)
+                    .fillMaxWidth()
             ) {
                 Column {
                     Text(text = "To", fontSize = 12.sp, color = Color.Gray)
@@ -172,6 +174,7 @@ fun TransportContent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             // Replace with your passenger and luggage icons and logic
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -215,7 +218,7 @@ fun TransportContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* Handle search action */ },
+            onClick = { onSearchClick() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)

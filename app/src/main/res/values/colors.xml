@@ -10,4 +10,13 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="background_color">#FFF5F5F5</color>
+
+    <color name="bg_selected">#FFA500</color>
+    <color name="bg_booked">#008080</color>
+    <color name="bg_available">#C0C0C0</color>
+
+    <color name="teal_800">#00695C</color>
+    <color name="zinc_950">#1C1C1E</color>
+    <color name="orange_300">#FFA726</color>
+
 </resources>
